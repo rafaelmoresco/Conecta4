@@ -34,7 +34,8 @@ class Conecta4(TwoPlayerGame):
     def __init__(self, players=None) -> None:
         super().__init__()
         self.players = players
-        self.current_player = random.choice([1,2])
+        self.current_player = 1
+        #self.current_player = random.choice([1,2])
         self.board = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]]
         self.boardAux = [0,0,0,0,0,0]
         self.p1Board = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]]
@@ -43,11 +44,12 @@ class Conecta4(TwoPlayerGame):
     def possible_moves(self): 
         return['0','1','2','3','4','5']
     def make_move(self,move): 
-        self.board[int(move)][self.boardAux[int(move)]] = self.current_player
+        self.board[int(move)][6-self.boardAux[int(move)]] = self.current_player
         if self.current_player == 1:    
-            self.p1Board[int(move)][self.boardAux[int(move)]] = 1
+            self.p1Board[int(move)][6-self.boardAux[int(move)]] = 1
         else:
-            self.p2Board[int(move)][self.boardAux[int(move)]] = 1
+            self.p2Board[int(move)][6-self.boardAux[int(move)]] = 1
+        self.boardAux[int(move)] += 1
     def win(self): 
         for kernel in detection_kernels:
             if self.current_player == 1 :
@@ -59,7 +61,7 @@ class Conecta4(TwoPlayerGame):
         return False
 
     def is_over(self): 
-        if 6 in self.boardAux:
+        if 7 in self.boardAux:
             return True
         return self.win() # Game stops when someone wins.
     def show(self): 
@@ -67,6 +69,6 @@ class Conecta4(TwoPlayerGame):
     def scoring(self): 
         return 100 if game.win() else 0 # For the AI
 
-ai = Negamax(30) # The AI will think 13 moves in advance
+ai = Negamax(100) # The AI will think 13 moves in advance
 game = Conecta4( [ Human_Player(), AI_Player(ai) ] )
 history = game.play()

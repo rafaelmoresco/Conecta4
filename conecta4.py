@@ -2,6 +2,7 @@ from easyAI import TwoPlayerGame, Human_Player, AI_Player, Negamax
 import random
 import numpy as np
 from scipy.signal import convolve2d
+from pprint import pprint
 
 
 horizontal_kernel = np.array([[ 1, 1, 1, 1]])
@@ -30,7 +31,7 @@ class GameOfBones( TwoPlayerGame ):
 
 
 class Conecta4(TwoPlayerGame):
-    def __init__(self, players) -> None:
+    def __init__(self, players=None) -> None:
         super().__init__()
         self.players = players
         self.current_player = random.choice([1,2])
@@ -62,10 +63,10 @@ class Conecta4(TwoPlayerGame):
             return True
         return self.win() # Game stops when someone wins.
     def show(self): 
-        print (self.board)
+        pprint (self.board)
     def scoring(self): 
         return 100 if game.win() else 0 # For the AI
 
-ai = Negamax(13) # The AI will think 13 moves in advance
+ai = Negamax(30) # The AI will think 13 moves in advance
 game = Conecta4( [ Human_Player(), AI_Player(ai) ] )
 history = game.play()

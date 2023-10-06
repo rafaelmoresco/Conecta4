@@ -46,7 +46,7 @@ class Conecta4(TwoPlayerGame):
         return False
 
     def is_over(self): 
-        if 7 in self.boardAux:
+        if self.possible_moves() == []:
             return True
         return self.win() # Game stops when someone wins.
     def show(self): 

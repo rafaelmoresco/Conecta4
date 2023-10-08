@@ -1,10 +1,10 @@
 try:
     import numpy as np
 except ImportError:
-    print("Sorry, this example requires Numpy installed !")
+    print("Numpy não econtrado !")
     raise
 
-from easyAI import TwoPlayerGame
+from easyAI import TwoPlayerGame, AI_Player, Negamax, SSS, Human_Player
 
 
 class ConnectFour(TwoPlayerGame):
@@ -56,8 +56,6 @@ class ConnectFour(TwoPlayerGame):
     def scoring(self):
         if self.lose():
             return -100
-        #if find_two(self.board, self.opponent_index):
-        #    return -33
         if find_three(self.board, self.opponent_index):
             return -50
         if find_two(self.board, self.current_player):
@@ -71,8 +69,7 @@ class ConnectFour(TwoPlayerGame):
 
 def find_four(board, current_player):
     """
-    Returns True iff the player has connected  4 (or more)
-    This is much faster if written in C or Cython
+    Verifica se o jogador tem 4 peças conectadas
     """
     for pos, direction in POS_DIR:
         streak = 0
@@ -87,6 +84,9 @@ def find_four(board, current_player):
     return False
 
 def find_two(board, current_player):
+    """
+    Verifica se o jogador tem 2 peças conectadas
+    """
     for pos, direction in POS_DIR:
         streak = 0
         while (0 <= pos[0] <= 5) and (0 <= pos[1] <= 6):
@@ -101,8 +101,7 @@ def find_two(board, current_player):
 
 def find_three(board, current_player):
     """
-    Returns True iff the player has connected  4 (or more)
-    This is much faster if written in C or Cython
+    Verifica se o jogador tem 3 peças conectadas
     """
     for pos, direction in POS_DIR:
         streak = 0
@@ -125,17 +124,12 @@ POS_DIR = np.array(
     + [[[0, i], [1, -1]] for i in range(3, 7)]
 )
 
-if __name__ == "__main__":
-    # LET'S PLAY !
-
-    from easyAI import AI_Player, Negamax, SSS, Human_Player
-
-    ai_algo_neg = Negamax(5)
-    ai_algo_neg2 = Negamax(5)
-    ai_algo_sss = SSS(5)
-    game = ConnectFour([AI_Player(ai_algo_neg), AI_Player(ai_algo_sss)])
-    game.play()
-    if game.lose():
-        print("Player %d wins." % (game.opponent_index))
-    else:
-        print("Looks like we have a draw.")
+ai_algo_neg = Negamax(5)
+ai_algo_neg2 = Negamax(5)
+ai_algo_sss = SSS(5)
+game = ConnectFour([Human_Player(), AI_Player(ai_algo_neg)])
+game.play()
+if game.lose():
+    print("Player %d wins." % (game.opponent_index))
+else:
+    print("Looks like we have a draw.")

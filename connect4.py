@@ -56,16 +56,15 @@ class ConnectFour(TwoPlayerGame):
     def scoring(self):
         if self.lose():
             return -100
-        if find_three(self.board, self.opponent_index):
-            return -50
-        if find_two(self.board, self.current_player):
-            return 25
-        if find_three(self.board, self.current_player):
-            return 50
         if self.win():
             return 100
+        if find_three(self.board, self.opponent_index):
+            return -50
+        #if find_two(self.board, self.current_player):
+            #return 25
+        if find_three(self.board, self.current_player):
+            return 50
         return 0
-
 
 def find_four(board, current_player):
     """

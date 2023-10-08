@@ -9,7 +9,7 @@ from easyAI import TwoPlayerGame, AI_Player, Negamax, SSS, Human_Player
 
 class ConnectFour(TwoPlayerGame):
     """
-    The game of Connect Four, as described here:
+    O jogo Connect 4 (Lig 4), descrito em:
     http://en.wikipedia.org/wiki/Connect_Four
     """
 
@@ -124,12 +124,21 @@ POS_DIR = np.array(
     + [[[0, i], [1, -1]] for i in range(3, 7)]
 )
 
-ai_algo_neg = Negamax(5)
-ai_algo_neg2 = Negamax(5)
-ai_algo_sss = SSS(5)
-game = ConnectFour([Human_Player(), AI_Player(ai_algo_neg)])
-game.play()
-if game.lose():
-    print("Player %d wins." % (game.opponent_index))
+print("Escolha o modo de jogo: Jogador vs IA (1) ou IA vs IA (2): ",end='')
+x = int(input())
+print("Escolha quantos passos a IA vai analisar (5 é o recomandado): ",end='')
+y = int(input())
+
+ai = Negamax(y)
+
+if x == 1:
+    game = ConnectFour([Human_Player(), AI_Player(ai)])
 else:
-    print("Looks like we have a draw.")
+    game = ConnectFour([AI_Player(ai), AI_Player(ai)])
+
+game.play()
+
+if game.lose():
+    print("Jogador %d ganhou!" % (game.opponent_index))
+else:
+    print("Jogo empatado!")

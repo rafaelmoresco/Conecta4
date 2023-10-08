@@ -43,12 +43,30 @@ class ConnectFour(TwoPlayerGame):
 
     def lose(self):
         return find_four(self.board, self.opponent_index)
+    
+    def win(self):
+        return find_four(self.board, self.current_player)
+
+    def score_two(self):
+        return find_two(self.board, self.current_player)
 
     def is_over(self):
         return (self.board.min() > 0) or self.lose()
 
     def scoring(self):
-        return -100 if self.lose() else 0
+        if self.lose():
+            return -100
+        #if find_two(self.board, self.opponent_index):
+        #    return -33
+        if find_three(self.board, self.opponent_index):
+            return -50
+        if find_two(self.board, self.current_player):
+            return 25
+        if find_three(self.board, self.current_player):
+            return 50
+        if self.win():
+            return 100
+        return 0
 
 
 def find_four(board, current_player):
@@ -68,6 +86,35 @@ def find_four(board, current_player):
             pos = pos + direction
     return False
 
+def find_two(board, current_player):
+    for pos, direction in POS_DIR:
+        streak = 0
+        while (0 <= pos[0] <= 5) and (0 <= pos[1] <= 6):
+            if board[pos[0], pos[1]] == current_player:
+                streak += 1
+                if streak == 2:
+                    return True
+            else:
+                streak = 0
+            pos = pos + direction
+    return False
+
+def find_three(board, current_player):
+    """
+    Returns True iff the player has connected  4 (or more)
+    This is much faster if written in C or Cython
+    """
+    for pos, direction in POS_DIR:
+        streak = 0
+        while (0 <= pos[0] <= 5) and (0 <= pos[1] <= 6):
+            if board[pos[0], pos[1]] == current_player:
+                streak += 1
+                if streak == 3:
+                    return True
+            else:
+                streak = 0
+            pos = pos + direction
+    return False
 
 POS_DIR = np.array(
     [[[i, 0], [0, 1]] for i in range(6)]
@@ -81,9 +128,10 @@ POS_DIR = np.array(
 if __name__ == "__main__":
     # LET'S PLAY !
 
-    from easyAI import AI_Player, Negamax, SSS
+    from easyAI import AI_Player, Negamax, SSS, Human_Player
 
     ai_algo_neg = Negamax(5)
+    ai_algo_neg2 = Negamax(5)
     ai_algo_sss = SSS(5)
     game = ConnectFour([AI_Player(ai_algo_neg), AI_Player(ai_algo_sss)])
     game.play()

@@ -42,13 +42,13 @@ class ConnectFour(TwoPlayerGame):
         )
 
     def lose(self):
-        return find_four(self.board, self.opponent_index)
+        return find_connection(self.board, self.opponent_index, 4)
     
     def win(self):
-        return find_four(self.board, self.current_player)
+        return find_connection(self.board, self.current_player, 4)
 
     def score_two(self):
-        return find_two(self.board, self.current_player)
+        return find_connection(self.board, self.current_player, 2)
 
     def is_over(self):
         return (self.board.min() > 0) or self.lose()
@@ -58,15 +58,15 @@ class ConnectFour(TwoPlayerGame):
             return -100
         if self.win():
             return 100
-        if find_three(self.board, self.opponent_index):
+        if find_connection(self.board, self.opponent_index, 3):
             return -50
-        if find_three(self.board, self.current_player):
+        if find_connection(self.board, self.current_player, 3):
             return 50
-        if find_two(self.board, self.current_player):
+        if find_connection(self.board, self.current_player,2 ):
             return 25
         return 0
 
-def find_four(board, current_player):
+def find_connection(board, current_player, streak_value):
     """
     Verifica se o jogador tem 4 peças conectadas
     """
@@ -75,39 +75,7 @@ def find_four(board, current_player):
         while (0 <= pos[0] <= 5) and (0 <= pos[1] <= 6):
             if board[pos[0], pos[1]] == current_player:
                 streak += 1
-                if streak == 4:
-                    return True
-            else:
-                streak = 0
-            pos = pos + direction
-    return False
-
-def find_two(board, current_player):
-    """
-    Verifica se o jogador tem 2 peças conectadas
-    """
-    for pos, direction in POS_DIR:
-        streak = 0
-        while (0 <= pos[0] <= 5) and (0 <= pos[1] <= 6):
-            if board[pos[0], pos[1]] == current_player:
-                streak += 1
-                if streak == 2:
-                    return True
-            else:
-                streak = 0
-            pos = pos + direction
-    return False
-
-def find_three(board, current_player):
-    """
-    Verifica se o jogador tem 3 peças conectadas
-    """
-    for pos, direction in POS_DIR:
-        streak = 0
-        while (0 <= pos[0] <= 5) and (0 <= pos[1] <= 6):
-            if board[pos[0], pos[1]] == current_player:
-                streak += 1
-                if streak == 3:
+                if streak == streak_value:
                     return True
             else:
                 streak = 0
